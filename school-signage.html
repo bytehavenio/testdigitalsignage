@@ -32,6 +32,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 8px 20px;
+      flex-wrap: wrap;
     }
 
     header img {
@@ -40,6 +41,7 @@
 
     #time {
       font-weight: 600;
+      text-align: left;
     }
 
     #notice {
@@ -86,7 +88,9 @@
 </head>
 <body>
   <header>
-    <div id="time">--:--</div>
+    <div id="time">
+      <!-- Date and time will appear here -->
+    </div>
     <div id="logo">
       <img src="https://YOUR_LOGO_URL_HERE" alt="School Logo">
     </div>
@@ -100,19 +104,26 @@
   <footer><div id="ticker">Loading ticker...</div></footer>
 
   <script>
-    // ========== 1️⃣ Update Full Date & Time (24-hour format) ==========
+    // ========== 1️⃣ Update Full Date & Time with descriptive text ==========
     function updateClock() {
       const now = new Date();
-      const options = {
-        weekday: 'long', // Monday, Tuesday...
-        year: 'numeric', // 2025
-        month: 'long',   // October
-        day: 'numeric',  // 14
+      const dateOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      };
+      const timeOptions = {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false    // 24-hour format
+        hour12: false
       };
-      document.getElementById('time').textContent = now.toLocaleString('en-GB', options);
+
+      const fullDate = now.toLocaleDateString('en-GB', dateOptions);
+      const fullTime = now.toLocaleTimeString('en-GB', timeOptions);
+
+      document.getElementById('time').innerHTML =
+        `Today's date is ${fullDate}<br>The current time is ${fullTime}`;
     }
 
     setInterval(updateClock, 1000);
@@ -139,11 +150,6 @@
 
     updateMessages();
     setInterval(updateMessages, 60000); // Refresh every 60 sec
-
-    // ========== 3️⃣ Optional: Dynamically change colors ==========
-    // Example: Change header/footer color via JS if needed
-    // document.documentElement.style.setProperty('--header-bg-color', '#112233');
-    // document.documentElement.style.setProperty('--footer-bg-color', '#445566');
   </script>
 </body>
 </html>
