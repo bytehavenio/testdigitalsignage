@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>School Digital Signage</title>
   <style>
+    /* ========== Configurable Colors ========== */
+    :root {
+      --header-bg-color: #003366; /* Top header background */
+      --footer-bg-color: #003366; /* Bottom ticker/footer background */
+      --notice-bg-color: #ffcc00; /* Notice/message background */
+      --notice-text-color: #000;  /* Notice/message text color */
+    }
+
+    /* ========== General Styles ========== */
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -15,38 +24,45 @@
       flex-direction: column;
       height: 100vh;
     }
+
     header {
-      background: #003366;
+      background: var(--header-bg-color);
       color: white;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 8px 20px;
     }
+
     header img {
       height: 55px;
     }
+
     #time {
       font-weight: 600;
     }
+
     #notice {
       font-size: 1rem;
-      background: #ffcc00;
-      color: #000;
+      background: var(--notice-bg-color);
+      color: var(--notice-text-color);
       padding: 4px 10px;
       border-radius: 6px;
     }
+
     #main {
       flex-grow: 1;
       display: flex;
     }
+
     iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
+
     footer {
-      background: #003366;
+      background: var(--footer-bg-color);
       color: white;
       height: 40px;
       display: flex;
@@ -55,11 +71,13 @@
       white-space: nowrap;
       position: relative;
     }
+
     #ticker {
       display: inline-block;
       padding-left: 100%;
       animation: scroll 30s linear infinite;
     }
+
     @keyframes scroll {
       from { transform: translateX(0); }
       to { transform: translateX(-100%); }
@@ -82,20 +100,26 @@
   <footer><div id="ticker">Loading ticker...</div></footer>
 
   <script>
-    // 1️⃣ Update Date and Time
+    // ========== 1️⃣ Update Full Date & Time (24-hour format) ==========
     function updateClock() {
       const now = new Date();
-      document.getElementById('time').textContent = now.toLocaleString('en-GB', {
-        weekday: 'short',
+      const options = {
+        weekday: 'long', // Monday, Tuesday...
+        year: 'numeric', // 2025
+        month: 'long',   // October
+        day: 'numeric',  // 14
         hour: '2-digit',
-        minute: '2-digit'
-      });
+        minute: '2-digit',
+        hour12: false    // 24-hour format
+      };
+      document.getElementById('time').textContent = now.toLocaleString('en-GB', options);
     }
+
     setInterval(updateClock, 1000);
     updateClock();
 
-    // 2️⃣ Pull data from Google Sheet
-    const SHEET_ID = "YOUR_SHEET_ID";
+    // ========== 2️⃣ Fetch Ticker & Notice from Google Sheet ==========
+    const SHEET_ID = "YOUR_SHEET_ID"; // Replace with your Google Sheet ID
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
     async function updateMessages() {
@@ -114,7 +138,12 @@
     }
 
     updateMessages();
-    setInterval(updateMessages, 60000); // Refresh every 60 seconds
+    setInterval(updateMessages, 60000); // Refresh every 60 sec
+
+    // ========== 3️⃣ Optional: Dynamically change colors ==========
+    // Example: Change header/footer color via JS if needed
+    // document.documentElement.style.setProperty('--header-bg-color', '#112233');
+    // document.documentElement.style.setProperty('--footer-bg-color', '#445566');
   </script>
 </body>
 </html>
