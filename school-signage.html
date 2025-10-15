@@ -25,6 +25,7 @@
       height: 100vh;
     }
 
+    /* ---------- Header / Banner ---------- */
     header {
       background: var(--header-bg-color);
       color: white;
@@ -35,15 +36,35 @@
       flex-wrap: wrap;
     }
 
-    header img {
-      height: 55px;
-    }
-
+    /* Left: Date & Time */
     #time {
       font-weight: 600;
       text-align: left;
+      font-size: 1.2em;
     }
 
+    /* Center: Logo + School Name */
+    #logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+    }
+
+    #logo img {
+      height: 55px;
+      width: auto;
+    }
+
+    .school-name {
+      font-size: 1.2em; /* Matches date/time size */
+      font-weight: 600;
+      margin: 0;
+      text-align: center;
+    }
+
+    /* Right: Notice section */
     #notice {
       font-size: 1rem;
       background: var(--notice-bg-color);
@@ -52,6 +73,7 @@
       border-radius: 6px;
     }
 
+    /* ---------- Main Presentation Area ---------- */
     #main {
       flex-grow: 1;
       display: flex;
@@ -63,6 +85,7 @@
       border: none;
     }
 
+    /* ---------- Footer / Ticker ---------- */
     footer {
       background: var(--footer-bg-color);
       color: white;
@@ -88,40 +111,48 @@
 </head>
 <body>
   <header>
-    <div id="time">
-      <!-- Date and time will appear here -->
-    </div>
+    <!-- Left: Date and Time -->
+    <div id="time"></div>
+
+    <!-- Center: Logo and School Name -->
     <div id="logo">
       <img src="https://www.hettonlyonsprimaryschool.co.uk/themes/hettonlyons/img/logo.png" alt="School Logo">
       <h1 class="school-name">Hetton Lyons Primary School</h1>
     </div>
+
+    <!-- Right: Notice -->
     <div id="notice">Welcome to our school</div>
   </header>
 
+  <!-- Main Presentation -->
   <div id="main">
     <iframe src="https://docs.google.com/presentation/d/e/YOUR_SLIDES_ID/embed?start=true&loop=true&delayms=10000"></iframe>
   </div>
 
-  <footer><div id="ticker">Loading ticker...</div></footer>
+  <!-- Footer / Ticker -->
+  <footer>
+    <div id="ticker">Loading ticker...</div>
+  </footer>
 
   <script>
-    // ========== 1️⃣ Update Full Date & Time with descriptive text ==========
+    // ========== 1️⃣ Update Full Date & Time with live seconds ==========
     function updateClock() {
       const now = new Date();
+
       const dateOptions = {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric'
       };
-      const timeOptions = {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-      };
+
+      // Format hours, minutes, seconds with leading zeros
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const fullTime = `${hours}:${minutes}:${seconds}`;
 
       const fullDate = now.toLocaleDateString('en-GB', dateOptions);
-      const fullTime = now.toLocaleTimeString('en-GB', timeOptions);
 
       document.getElementById('time').innerHTML =
         `Today's date is ${fullDate}<br>The current time is ${fullTime}`;
@@ -130,7 +161,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // ========== 2️⃣ Fetch Ticker & Notice from Google Sheet ==========
+    // ========== 2️⃣ Fetch Ticker from Google Sheet ==========
     const SHEET_ID = "YOUR_SHEET_ID"; // Replace with your Google Sheet ID
     const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
 
@@ -141,9 +172,7 @@
         const json = JSON.parse(text.substr(47).slice(0, -2));
         const rows = json.table.rows;
         const tickerText = rows[0].c[0]?.v || "No ticker message.";
-        const noticeText = rows[0].c[1]?.v || "No notice message.";
         document.getElementById('ticker').textContent = tickerText;
-        document.getElementById('notice').textContent = noticeText;
       } catch (err) {
         console.error("Error fetching sheet:", err);
       }
